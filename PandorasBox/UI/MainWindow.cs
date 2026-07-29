@@ -155,7 +155,7 @@ internal class MainWindow : Window
                     {
                         if ((OpenWindow)window == OpenWindow.None) continue;
 
-                        if (ImGui.Selectable($"{window}", OpenWindow == (OpenWindow)window))
+                        if (ImGui.Selectable($"{LocalizeWindow((OpenWindow)window)}##{window}", OpenWindow == (OpenWindow)window))
                         {
                             OpenWindow = (OpenWindow)window;
                         }
@@ -164,7 +164,7 @@ internal class MainWindow : Window
                     ImGui.Spacing();
                     if (Config.DisabledTheme)
                     {
-                        if (ImGui.Selectable("Enable Theme", false))
+                        if (ImGui.Selectable("啟用主題##Enable Theme", false))
                         {
                             Config.DisabledTheme = false;
                             Config.Save();
@@ -172,7 +172,7 @@ internal class MainWindow : Window
                     }
                     else
                     {
-                        if (ImGui.Selectable("Disable Theme", false))
+                        if (ImGui.Selectable("停用主題##Disable Theme", false))
                         {
                             Config.DisabledTheme = true;
                             Config.Save();
@@ -180,7 +180,7 @@ internal class MainWindow : Window
                     }
 
                     ImGui.SetCursorPosY(ImGui.GetContentRegionMax().Y - 45f);
-                    ImGuiEx.LineCentered("###Search", () => { ImGui.Text($"Search"); ImGuiComponents.HelpMarker("Searches feature names and descriptions for a given word or phrase."); });
+                    ImGuiEx.LineCentered("###Search", () => { ImGui.Text("搜尋"); ImGuiComponents.HelpMarker("依指定文字或詞組搜尋功能名稱與說明。"); });
                     ImGuiEx.SetNextItemFullWidth();
                     if (ImGui.InputText("###FeatureSearch", ref searchString, 500))
                     {
@@ -200,7 +200,9 @@ internal class MainWindow : Window
                             {
                                 if (feature.FeatureType == FeatureType.Commands) continue;
 
-                                if (feature.Description.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
+                                if (feature.LocalizedDescription.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
+                                    feature.Description.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
+                                    feature.LocalizedName.Contains(searchString, StringComparison.CurrentCultureIgnoreCase) ||
                                     feature.Name.Contains(searchString, StringComparison.CurrentCultureIgnoreCase))
                                     filteredFeatures.Add(feature);
                             }
@@ -259,16 +261,16 @@ internal class MainWindow : Window
     private static void DrawCommands(BaseFeature[] features)
     {
         if (features == null || !features.Any() || features.Length == 0) return;
-        ImGuiEx.LineCentered($"featureHeader{features.First().FeatureType}", () => ImGui.Text($"{features.First().FeatureType}"));
+        ImGuiEx.LineCentered($"featureHeader{features.First().FeatureType}", () => ImGui.Text(LocalizeFeatureType(features.First().FeatureType)));
         ImGui.Separator();
 
         if (ImGui.BeginTable("###CommandsTable", 5, ImGuiTableFlags.Borders))
         {
-            ImGui.TableSetupColumn("Name");
-            ImGui.TableSetupColumn("Command");
-            ImGui.TableSetupColumn("Parameters");
-            ImGui.TableSetupColumn("Description");
-            ImGui.TableSetupColumn("Aliases");
+            ImGui.TableSetupColumn("名稱");
+            ImGui.TableSetupColumn("指令");
+            ImGui.TableSetupColumn("參數");
+            ImGui.TableSetupColumn("說明");
+            ImGui.TableSetupColumn("別名");
 
             ImGui.TableHeadersRow();
             foreach (var feature in features.Cast<CommandFeature>())
@@ -277,13 +279,13 @@ internal class MainWindow : Window
 
                 ImGui.TableNextRow();
                 ImGui.TableNextColumn();
-                ImGui.TextWrapped(feature.Name);
+                ImGui.TextWrapped(feature.LocalizedName);
                 ImGui.TableNextColumn();
                 ImGui.TextWrapped(feature.Command);
                 ImGui.TableNextColumn();
                 ImGui.TextWrapped(string.Join(", ", feature.Parameters));
                 ImGui.TableNextColumn();
-                ImGui.TextWrapped($"{feature.Description}");
+                ImGui.TextWrapped(feature.LocalizedDescription);
                 ImGui.TableNextColumn();
                 ImGui.TextWrapped($"{string.Join(", ", feature.Alias)}");
 
@@ -301,10 +303,10 @@ internal class MainWindow : Window
         {
             if (filteredFeatures.Count > 0)
             {
-                ImGui.Text($"Search Results");
+                ImGui.Text("搜尋結果");
             }
             else
-                ImGui.Text($"{features.First().FeatureType}");
+                ImGui.Text(LocalizeFeatureType(features.First().FeatureType));
         });
         ImGui.Separator();
 
@@ -348,14 +350,37 @@ internal class MainWindow : Window
                 ImGui.SameLine();
                 feature.DrawConfig(ref enabled);
                 ImGui.Spacing();
-                ImGui.TextWrapped($"{feature.Description}");
+                ImGui.TextWrapped(feature.LocalizedDescription);
             }
                 if (feature.FeatureDisabled)
-                    ImGuiEx.Text(ImGuiColors.DalamudRed, $"Disabled Reason: {feature.DisabledReason}");
+                    ImGuiEx.Text(ImGuiColors.DalamudRed, $"停用原因：{feature.DisabledReason}");
 
                 ImGui.Separator();
         }
     }
+
+    private static string LocalizeWindow(OpenWindow window) => window switch
+    {
+        OpenWindow.Actions => "動作",
+        OpenWindow.UI => "介面",
+        OpenWindow.Targets => "目標",
+        OpenWindow.Chat => "聊天",
+        OpenWindow.Other => "其他",
+        OpenWindow.Commands => "指令",
+        OpenWindow.About => "關於",
+        _ => window.ToString(),
+    };
+
+    private static string LocalizeFeatureType(FeatureType type) => type switch
+    {
+        FeatureType.Actions => "動作",
+        FeatureType.UI => "介面",
+        FeatureType.Targeting => "目標",
+        FeatureType.Commands => "指令",
+        FeatureType.Other => "其他",
+        FeatureType.ChatFeature => "聊天",
+        _ => type.ToString(),
+    };
 }
 
 public enum OpenWindow

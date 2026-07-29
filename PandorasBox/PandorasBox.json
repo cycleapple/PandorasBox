@@ -1,8 +1,8 @@
 {
     "Author": "Taurenkey (Puni.sh)",
     "Name": "Pandora's Box",
-    "Punchline": "Do you dare to open Pandora's Box?",
-    "Description": "Pandora's Box is a collection of major QoL tweaks and adjustments.\n\nOpen the box with /pandora",
+    "Punchline": "你敢打開潘朵拉之盒嗎？",
+    "Description": "Pandora's Box 收錄多種大型便利功能與遊戲調整。\n\n使用 /pandora 開啟設定。",
     "InternalName": "Pandora's Box",
     "ApplicableVersion": "any",
     "DalamudApiLevel": 13,
@@ -13,5 +13,5 @@
         "punish",
         "plugin"
     ],
-    "ChangeLog":  "- Solid Reason/Ageless Words fix."
+    "ChangeLog":  "- 修正「石工之理／農夫之智」相關問題。"
 }
