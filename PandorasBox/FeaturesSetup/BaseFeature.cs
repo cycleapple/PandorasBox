@@ -709,5 +709,11 @@ namespace PandorasBox.Features
         }
 
 
+        // API14 controller hooks use the SDK virtual table contract.
+        public unsafe Dalamud.Hooking.Hook<T> HookFromVTable<T>(void* vtblAddress, int vfIndex, T detour) where T : Delegate
+            => HookFromVTable((nint)vtblAddress, vfIndex, detour);
+        public unsafe Dalamud.Hooking.Hook<T> HookFromVTable<T>(nint vtblAddress, int vfIndex, T detour) where T : Delegate
+            => Svc.Hook.HookFromAddress(*(nint*)(vtblAddress + vfIndex * 0x08), detour);
+
     }
 }
