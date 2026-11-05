@@ -5,7 +5,7 @@
     "Description": "Pandora's Box 收錄多種大型便利功能與遊戲調整。\n\n使用 /pandora 開啟設定。",
     "InternalName": "Pandora's Box",
     "ApplicableVersion": "any",
-    "DalamudApiLevel": 13,
+    "DalamudApiLevel": 14,
     "IconUrl": "https://love.puni.sh/resources/pandora.png",
     "RepoUrl": "https://github.com/PunishXIV/PandorasBox",
     "DownloadLinkTesting": "https://love.puni.sh/plugins/Pandora/Testing/latest.zip",

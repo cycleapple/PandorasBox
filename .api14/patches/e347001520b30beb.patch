@@ -1,0 +1,109 @@
+diff --git a/ECommons/DalamudServices/Legacy/GameNetworkAddressResolver.cs b/ECommons/DalamudServices/Legacy/GameNetworkAddressResolver.cs
+index a0af9f9..2e54f25 100644
+--- a/ECommons/DalamudServices/Legacy/GameNetworkAddressResolver.cs
++++ b/ECommons/DalamudServices/Legacy/GameNetworkAddressResolver.cs
+@@ -1,4 +1,5 @@
+-﻿using Dalamud.Game;
++using Dalamud.Plugin.Services;
++using Dalamud.Game;
+ using System;
+ 
+ namespace ECommons.DalamudServices.Legacy;
+diff --git a/ECommons/DalamudServices/Legacy/NetworkMessageDirection.cs b/ECommons/DalamudServices/Legacy/NetworkMessageDirection.cs
+new file mode 100644
+index 0000000..7f91b8e
+--- /dev/null
++++ b/ECommons/DalamudServices/Legacy/NetworkMessageDirection.cs
+@@ -0,0 +1,7 @@
++namespace ECommons.DalamudServices.Legacy;
++
++public enum NetworkMessageDirection
++{
++    ZoneDown = 0,
++    ZoneUp = 1,
++}
+diff --git a/ECommons/ECommons.csproj b/ECommons/ECommons.csproj
+index 33903cd..3319e4a 100644
+--- a/ECommons/ECommons.csproj
++++ b/ECommons/ECommons.csproj
+@@ -10,7 +10,7 @@
+     </PropertyGroup>
+ 
+     <PropertyGroup>
+-        <TargetFramework>net9.0-windows7.0</TargetFramework>
++        <TargetFramework>net10.0-windows7.0</TargetFramework>
+         <Platforms>x64</Platforms>
+         <LangVersion>preview</LangVersion>
+         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+diff --git a/ECommons/ExcelServices/Sheets/ExtendedBaseParam.cs b/ECommons/ExcelServices/Sheets/ExtendedBaseParam.cs
+index eef66db..854b955 100644
+--- a/ECommons/ExcelServices/Sheets/ExtendedBaseParam.cs
++++ b/ECommons/ExcelServices/Sheets/ExtendedBaseParam.cs
+@@ -1,4 +1,4 @@
+-﻿using Lumina;
++using Lumina;
+ using Lumina.Data;
+ using Lumina.Excel;
+ using Lumina.Excel.Sheets;
+@@ -9,6 +9,9 @@ namespace ECommons.ExcelServices.Sheets;
+ [Sheet("BaseParam")]
+ public readonly unsafe struct ExtendedBaseParam(ExcelPage page, uint offset, uint row) : IRowExtension<ExtendedBaseParam, BaseParam>
+ {
++    public ExcelPage ExcelPage => page;
++    public uint RowOffset => offset;
++
+ 
+     private const int ParamCount = 23;
+ 
+diff --git a/ECommons/ExcelServices/Sheets/QuestDialogueText.cs b/ECommons/ExcelServices/Sheets/QuestDialogueText.cs
+index 8f099d1..e344fa9 100644
+--- a/ECommons/ExcelServices/Sheets/QuestDialogueText.cs
++++ b/ECommons/ExcelServices/Sheets/QuestDialogueText.cs
+@@ -1,4 +1,4 @@
+-﻿using FFXIVClientStructs.FFXIV.Component.Excel;
++using FFXIVClientStructs.FFXIV.Component.Excel;
+ using Lumina;
+ using Lumina.Excel;
+ using Lumina.Excel.Sheets;
+@@ -14,6 +14,9 @@ namespace ECommons.ExcelServices.Sheets;
+ [Sheet]
+ public struct QuestDialogueText(ExcelPage page, uint offset, uint row) : IExcelRow<QuestDialogueText>
+ {
++    public ExcelPage ExcelPage => page;
++    public uint RowOffset => offset;
++
+     public ReadOnlySeString Key => page.ReadString(offset, offset);
+     public ReadOnlySeString Value => page.ReadString(offset + 4, offset);
+     public uint RowId => row;
+diff --git a/ECommons/Hooks/ActionEffectTypes/ActionEffectSet.cs b/ECommons/Hooks/ActionEffectTypes/ActionEffectSet.cs
+index f1091fc..60c0f37 100644
+--- a/ECommons/Hooks/ActionEffectTypes/ActionEffectSet.cs
++++ b/ECommons/Hooks/ActionEffectTypes/ActionEffectSet.cs
+@@ -1,4 +1,4 @@
+-﻿using Dalamud.Game.ClientState.Objects.Types;
++using Dalamud.Game.ClientState.Objects.Types;
+ using ECommons.DalamudServices;
+ using FFXIVClientStructs.FFXIV.Client.Game;
+ using Lumina.Excel.Sheets;
+@@ -39,7 +39,7 @@ public readonly unsafe record struct ActionEffectSet
+     {
+         switch(effectHeader->ActionType)
+         {
+-            case ActionType.KeyItem:
++            case ActionType.EventItem:
+                 EventItem = Svc.Data.GetExcelSheet<EventItem>()!.GetRowOrDefault(effectHeader->ActionID);
+                 Name = EventItem?.Singular.ToString() ?? string.Empty;
+                 IconId = EventItem?.Icon ?? 0;
+diff --git a/ECommons/packages.lock.json b/ECommons/packages.lock.json
+index 82b5f90..feca6f7 100644
+--- a/ECommons/packages.lock.json
++++ b/ECommons/packages.lock.json
+@@ -1,7 +1,7 @@
+ {
+   "version": 1,
+   "dependencies": {
+-    "net9.0-windows7.0": {
++    "net10.0-windows7.0": {
+       "Microsoft.CodeAnalysis.BannedApiAnalyzers": {
+         "type": "Direct",
+         "requested": "[3.3.4, )",
