@@ -23,7 +23,7 @@ index 0000000..7f91b8e
 +    ZoneUp = 1,
 +}
 diff --git a/ECommons/ECommons.csproj b/ECommons/ECommons.csproj
-index 33903cd..3319e4a 100644
+index 33903cd..5820eb4 100644
 --- a/ECommons/ECommons.csproj
 +++ b/ECommons/ECommons.csproj
 @@ -10,7 +10,7 @@
@@ -35,6 +35,17 @@ index 33903cd..3319e4a 100644
          <Platforms>x64</Platforms>
          <LangVersion>preview</LangVersion>
          <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+@@ -113,10 +113,6 @@
+             <HintPath>$(DalamudLibPath)InteropGenerator.Runtime.dll</HintPath>
+             <Private>False</Private>
+         </Reference>
+-        <Reference Include="SharpDX.Mathematics">
+-            <HintPath>$(DalamudLibPath)SharpDX.Mathematics.dll</HintPath>
+-            <Private>False</Private>
+-        </Reference>
+         <Reference Include="Reloaded.Hooks.Definitions">
+             <HintPath>$(DalamudLibPath)Reloaded.Hooks.Definitions.dll</HintPath>
+             <Private>False</Private>
 diff --git a/ECommons/ExcelServices/Sheets/ExtendedBaseParam.cs b/ECommons/ExcelServices/Sheets/ExtendedBaseParam.cs
 index eef66db..854b955 100644
 --- a/ECommons/ExcelServices/Sheets/ExtendedBaseParam.cs
